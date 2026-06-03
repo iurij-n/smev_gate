@@ -57,25 +57,42 @@ async def execution_documents_send(payload: dict):
     any_content = f"<fssp:NsiRequest xmlns:fssp='urn://x-artifacts-fssp-ru/mvv/smev3/nsi/1.0.1' xmlns:c='urn://x-artifacts-fssp-ru/mvv/smev3/container/1.0.1'><c:ID>2345</c:ID><c:Date>{current_date_iso}</c:Date><c:SenderOrganizationCode>БМ</c:SenderOrganizationCode><c:ReceiverOrganizationCode>ФССП</c:ReceiverOrganizationCode><c:Document><c:Organization>БМ</c:Organization><c:ID>2345</c:ID><c:Type>ReferenceInfoRequest</c:Type><c:DocumentDate>{current_date_short}</c:DocumentDate><c:DocumentNumber>2345</c:DocumentNumber><c:Filename>{ZIP_NAME}</c:Filename></c:Document></fssp:NsiRequest>"
 
     # Собираем JSON
+    # json_payload = {
+    #     "itSystem": settings.IS_MNEMONIC,
+    #     "requestMessage": {
+    #         "messageType": "RequestMessageType",
+    #         "requestMetadata": {"clientId": CLIENT_ID, "testMessage": True},
+    #         "requestContent": {
+    #             "content": {"messagePrimaryContent": {"any": any_content}},
+    #             "attachmentHeaderList": {
+    #                 "attachmentHeader": [
+    #                     {
+    #                         "id": ZIP_NAME,
+    #                         "filePath": ZIP_NAME,
+    #                         "fileName": ZIP_NAME,
+    #                         "transferMethod": "REFERENCE",
+    #                     }
+    #                 ]
+    #             },
+    #         },
+    #     },
+    # }
     json_payload = {
-        "itSystem": settings.IS_MNEMONIC,
+        "itSystem": "460A01",
         "requestMessage": {
             "messageType": "RequestMessageType",
-            "requestMetadata": {"clientId": CLIENT_ID, "testMessage": True},
-            "requestContent": {
-                "content": {"messagePrimaryContent": {"any": any_content}},
-                "attachmentHeaderList": {
-                    "attachmentHeader": [
-                        {
-                            "id": ZIP_NAME,
-                            "filePath": ZIP_NAME,
-                            "fileName": ZIP_NAME,
-                            "transferMethod": "REFERENCE",
-                        }
-                    ]
-                },
+            "requestMetadata": {
+                "clientId": "00000000-0000-0000-0000-000000000020",
+                "testMessage": True
             },
-        },
+            "requestContent": {
+                "content": {
+                    "messagePrimaryContent": {
+                        "any": "<?xml version='1.0' encoding='UTF-8'?><fssp:NsiRequest xmlns:fssp='urn://x-artifacts-fssp-ru/mvv/smev3/nsi/1.0.1' xmlns:c='urn://x-artifacts-fssp-ru/mvv/smev3/container/1.0.1'><c:ID>2345</c:ID><c:Date>2015-10-12T00:00:00</c:Date><c:SenderOrganizationCode>БМ</c:SenderOrganizationCode><c:ReceiverOrganizationCode>ФССП</c:ReceiverOrganizationCode><c:Document><c:Organization>БМ</c:Organization><c:ID>2345</c:ID><c:Type>ReferenceInfoRequest</c:Type><c:DocumentDate>2015-10-12</c:DocumentDate><c:DocumentNumber>2345</c:DocumentNumber><c:Filename>req_4xzb12c8-2194-4401-8b49-49215ca1cfbc.zip</c:Filename></c:Document></fssp:NsiRequest>"
+                    }
+                }
+            }
+        }
     }
 
     print("2. Отправка JSON-запроса в локальный Адаптер...")
