@@ -17,7 +17,7 @@ async def execution_documents_send(payload: dict):
     ADAPTER_API_URL = f"{settings.ADAPTER_URL}/send"
 
     # Генерируем чистые уникальные ID
-    CLIENT_ID = "00000000-0000-0000-0000-000000000018"
+    CLIENT_ID = "00000000-0000-0000-0000-000000000021"
     ZIP_NAME = f"req_{CLIENT_ID}.zip"
     XML_NAME = f"req_{CLIENT_ID}.xml"
 
@@ -82,7 +82,7 @@ async def execution_documents_send(payload: dict):
         "requestMessage": {
             "messageType": "RequestMessageType",
             "requestMetadata": {
-                "clientId": "CLIENT_ID",
+                "clientId": CLIENT_ID,
                 "testMessage": True
             },
             "requestContent": {
