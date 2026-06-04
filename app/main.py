@@ -14,9 +14,35 @@ app = FastAPI(title=settings.PROJECT_NAME)
     summary="Исполнительные документы (метод send)"
 )
 async def execution_documents_send(payload: dict):
+    # #################################################################################################################
+    test_payload = {
+        "pack_id": "12f1a3cd-cd5f-48fe-8ed4-f73e3d9f9b2b",  # c:ID пакета
+        "date": "2015-10-12T00:00:00",  # c:Date
+        "sender_id": "EPGU01",  # c:SenderID (например Мнемоника ЕПГУ)
+        "receiver_id": "FSSP01",  # c:ReceiverID (Мнемоника ФССП)
+        "receiver_department": "33013",  # c:ReceiverDepartmentCode (Код ОСП)
+        "documents": [
+            {
+                "doc_id": "2469",  # c:ID документа
+                "type": "I_IPSIDE_OSP_COURSEIP",  # c:Type (Код типа)
+                "document_date": "2015-10-12",  # c:DocumentDate
+                "document_number": "506559",  # c:DocumentNumber
+                "case_number": "7407/14/33025-ИП",  # c:DocumentCaseNumber
+                "is_unstructured": False,  # att:IsUnstructuredFormat
+                "structured_format_type": "http://www.fssprus.ru/namespace/IRequestOther/2017/1",  # att:StructuredFormatType
+                "attachment_filename": "piev_4ccb83c6-2888-4561-8b49-49215ca1cfbc.zip",  # att:AttachmentFilename
+            }
+        ],
+    }
+
+    # xml_content = execution_documents.generate_smev3_application_any_content(test_payload)
+    # print(xml_content)
+
+    # #################################################################################################################
+    # return
 
     ADAPTER_API_URL = f"{settings.ADAPTER_URL}/send"
-    CLIENT_ID = payload.get("client_id", "00000000-0000-0000-0000-000000000022")
+    CLIENT_ID = payload.get("client_id", "00000000-0000-0000-0000-000000000023")
     
     json_payload = {
         "itSystem": settings.IS_MNEMONIC,
@@ -29,7 +55,8 @@ async def execution_documents_send(payload: dict):
             "requestContent": {
                 "content": {
                     "messagePrimaryContent": {
-                        "any": execution_documents.get_any_content(CLIENT_ID)
+                        # "any": execution_documents.get_any_content(CLIENT_ID)
+                        "any": execution_documents.generate_smev3_application_any_content(test_payload)
                     }
                 }
             }
@@ -138,3 +165,74 @@ async def execution_documents_send(payload: dict):
     #         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
     #         detail=f"Внутренняя ошибка шлюза: {str(e)}"
     #     )
+
+
+
+#     <fssp:ApplicationDocumentsRequest
+# 	xmlns:att="urn://x-artifacts-fssp-ru/mvv/smev3/attachments/1.1.0"
+# 	xmlns:c="urn://x-artifacts-fssp-ru/mvv/smev3/container/1.1.0"
+# 	xmlns:fssp="urn://x-artifacts-fssp-ru/mvv/smev3/application-documents/1.1.1">
+# 	<c:ID>12f1a3cd-cd5f-48fe-8ed4-f73e3d9f9b2b</c:ID>
+# 	<c:Date>2015-10-12T00:00:00</c:Date>
+# 	<c:SenderID>EPGU01</c:SenderID>
+# 	<c:ReceiverID>FSSP01</c:ReceiverID>
+# 	<c:ReceiverDepartmentCode>33013</c:ReceiverDepartmentCode>
+# 	<c:Document>
+# 		<c:ID>2469</c:ID>
+# 		<c:Type>I_IPSIDE_OSP_COURSEIP</c:Type>
+# 		<c:DocumentDate>2015-10-12</c:DocumentDate>
+# 		<c:DocumentNumber>506559</c:DocumentNumber>
+# 		<c:DocumentCaseNumber>7407/14/33025-ИП</c:DocumentCaseNumber>
+# 		<c:AttachmentsBlock>
+# 			<att:AttachmentDescription>
+# 				<att:AttachmentFormat>
+# 					<att:IsUnstructuredFormat>false</att:IsUnstructuredFormat>
+# 					<att:IsZippedPacket>true</att:IsZippedPacket>
+# 					<att:StructuredFormatType>http://www.fssprus.ru/namespace/IRequestOther/2017/1</att:StructuredFormatType>
+# 				</att:AttachmentFormat>
+# 				<att:AttachmentFilename>piev_4ccb83c6-2888-4561-8b49-49215ca1cfbc.zip</att:AttachmentFilename>
+# 			</att:AttachmentDescription>
+# 		</c:AttachmentsBlock>
+# 	</c:Document>
+# </fssp:ApplicationDocumentsRequest>
+
+
+
+
+
+
+
+# --- ETALON-----
+# <?xml version="1.0" encoding="UTF-8"?>
+# <fssp:ApplicationDocumentsRequest
+# 	xmlns:fssp="urn://x-artifacts-fssp-ru/mvv/smev3/application-documents/1.1.1"
+# 	xmlns:c="urn://x-artifacts-fssp-ru/mvv/smev3/container/1.1.0"
+# 	xmlns:att="urn://x-artifacts-fssp-ru/mvv/smev3/attachments/1.1.0">
+# 	<c:ID>12f1a3cd-cd5f-48fe-8ed4-f73e3d9f9b2b</c:ID>
+# 	<c:Date>2015-10-12T00:00:00</c:Date>
+# 	<c:SenderID>EPGU01</c:SenderID>
+# 	<c:ReceiverID>FSSP01</c:ReceiverID>
+# 	<c:ReceiverDepartmentCode>33013</c:ReceiverDepartmentCode>
+# 	<c:Document>
+# 		<c:ID>2469</c:ID>
+# 		<c:Type>I_IPSIDE_OSP_COURSEIP</c:Type>
+# 		<c:DocumentDate>2015-10-12</c:DocumentDate>
+# 		<c:DocumentNumber>506559</c:DocumentNumber>
+# 		<c:DocumentCaseNumber>7407/14/33025-ИП</c:DocumentCaseNumber>
+# 		<c:AttachmentsBlock>
+# 			<att:AttachmentDescription>
+# 				<att:AttachmentFormat>
+# 					<att:IsUnstructuredFormat>false</att:IsUnstructuredFormat>
+# 					<att:IsZippedPacket>true</att:IsZippedPacket>
+# 					<att:StructuredFormatType>http://www.fssprus.ru/namespace/IRequestOther/2017/1</att:StructuredFormatType>
+# 				</att:AttachmentFormat>
+# 				<att:AttachmentFilename>piev_4ccb83c6-2888-4561-8b49-49215ca1cfbc.zip</att:AttachmentFilename>
+# 			</att:AttachmentDescription>
+# 		</c:AttachmentsBlock>
+# 	</c:Document>
+# </fssp:ApplicationDocumentsRequest>
+
+
+
+# <?xml version="1.0" encoding="UTF-8"?><fssp:ApplicationDocumentsRequest xmlns:att="urn://x-artifacts-fssp-ru/mvv/smev3/attachments/1.1.0" xmlns:c="urn://x-artifacts-fssp-ru/mvv/smev3/container/1.1.0" xmlns:fssp="urn://x-artifacts-fssp-ru/mvv/smev3/application-documents/1.1.1"><c:ID>12f1a3cd-cd5f-48fe-8ed4-f73e3d9f9b2b</c:ID><c:Date>2015-10-12T00:00:00</c:Date><c:SenderID>EPGU01</c:SenderID><c:ReceiverID>FSSP01</c:ReceiverID><c:ReceiverDepartmentCode>33013</c:ReceiverDepartmentCode><c:Document><c:ID>2469</c:ID><c:Type>I_IPSIDE_OSP_COURSEIP</c:Type><c:DocumentDate>2015-10-12</c:DocumentDate><c:DocumentNumber>506559</c:DocumentNumber><c:DocumentCaseNumber>7407/14/33025-ИП</c:DocumentCaseNumber><c:AttachmentsBlock><att:AttachmentDescription><att:AttachmentFormat><att:IsUnstructuredFormat>false</att:IsUnstructuredFormat><att:IsZippedPacket>true</att:IsZippedPacket><att:StructuredFormatType>http://www.fssprus.ru/namespace/IRequestOther/2017/1</att:StructuredFormatType></att:AttachmentFormat><att:AttachmentFilename>piev_4ccb83c6-2888-4561-8b49-49215ca1cfbc.zip</att:AttachmentFilename></att:AttachmentDescription></c:AttachmentsBlock></c:Document></fssp:ApplicationDocumentsRequest>
+# <?xml version="1.0" encoding="UTF-8"?><fssp:ApplicationDocumentsRequest xmlns:fssp="urn://x-artifacts-fssp-ru/mvv/smev3/application-documents/1.1.1" xmlns:c="urn://x-artifacts-fssp-ru/mvv/smev3/container/1.1.0" xmlns:att="urn://x-artifacts-fssp-ru/mvv/smev3/attachments/1.1.0"><c:ID>12f1a3cd-cd5f-48fe-8ed4-f73e3d9f9b2b</c:ID><c:Date>2015-10-12T00:00:00</c:Date><c:SenderID>EPGU01</c:SenderID><c:ReceiverID>FSSP01</c:ReceiverID><c:ReceiverDepartmentCode>33013</c:ReceiverDepartmentCode><c:Document><c:ID>2469</c:ID><c:Type>I_IPSIDE_OSP_COURSEIP</c:Type><c:DocumentDate>2015-10-12</c:DocumentDate><c:DocumentNumber>506559</c:DocumentNumber><c:DocumentCaseNumber>7407/14/33025-ИП</c:DocumentCaseNumber><c:AttachmentsBlock><att:AttachmentDescription><att:AttachmentFormat><att:IsUnstructuredFormat>false</att:IsUnstructuredFormat><att:IsZippedPacket>true</att:IsZippedPacket><att:StructuredFormatType>http://www.fssprus.ru/namespace/IRequestOther/2017/1</att:StructuredFormatType></att:AttachmentFormat><att:AttachmentFilename>piev_4ccb83c6-2888-4561-8b49-49215ca1cfbc.zip</att:AttachmentFilename></att:AttachmentDescription></c:AttachmentsBlock></c:Document></fssp:ApplicationDocumentsRequest>
